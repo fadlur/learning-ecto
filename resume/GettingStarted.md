@@ -404,3 +404,46 @@ Pengecualian ini memperlihatkan kita perubahan dari changeset, dan bagaimana cha
 Untuk penyisipan datanya sampai di sini, sekarang kita akan mengambil datanya.
 
 **Query pertama**
+Meng-Query sebuah database membutuhkan 2 langkah di Ecto. Pertama, kita harus membuat query dan kemudian kita harus mengeksekusi query terhadap database dengan melewatkan query ke repository. Sebelum kita melakukan ini, mari kita membuat ulang database untuk app kita dan siapkan data test. Untuk membuat ulang database, kita akan menjalankan perintah ini:
+
+```elixir
+mix ecto.drop
+mix ecto.create
+mix ecto.migrate
+```
+
+Kemudian kita buat data test, kita jalankan ini di sesi `iex -S mix`:
+
+```elixir
+people = [
+  %Friends.Person{first_name: "Ryan", last_name: "Bigg", age: 28},
+  %Friends.Person{first_name: "John", last_name: "Smith", age: 27},
+  %Friends.Person{first_name: "Jane", last_name: "Smith", age: 26},
+]
+
+Enum.each(people, fn (person) -> Friends.Repo.insert(person) end)
+```
+
+Kode ini akan membuat 3 data people di database kita, Ryan, John dan Jane.
+
+Kita akan membuat query untuk people di bagian ini.
+
+**Fetching a single record**
+Mari kita mulai dengan mengambil satu record dari table `people`:
+
+```elixir
+Friends.Person |> Ecto.Query.first
+```
+
+Kode ini akan menghasilkan sebuah `Ecto.Query`, yang akan menjadi seperti ini:
+
+```elixir
+#Ecto.Query<from p0 in Friends.Person, order_by: [asc: p0.id], limit: 1>
+```
+
+Kode di antara `<...>` di sini memperlihatkan Ecto query yang telah dibuat. Kita dapat membuat query sendiri dengan sintaks hampir sama.
+
+```elixir
+require Ecto.Query
+Ecto.Query.from p in Friends.Person, order_by: [asc: p.id], limit 1
+```
