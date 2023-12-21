@@ -8,3 +8,6 @@ config :friends, Friends.Repo,
   username: "postgres",
   password: "147789",
   hostname: "127.0.0.1"
+
+
+  import_config "#{config_env()}.exs"
